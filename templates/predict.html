@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Deteksi Gerakan</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-container">
+    <div class="nav-group">
+      <a href="{{ url_for('home') }}">HOME</a>
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
+      <a href="#">ABOUT</a>
+    </div>
+  </div>
+</nav>
+
+<main class="content">
+
+  <!-- ───── KIRI : PREVIEW ───── -->
+  <section class="preview-card">
+    {% if filename %}
+      <!-- VIDEO overlay key‑point -->
+      <video id="previewVideo" class="preview-video"
+            controls playsinline style="border-radius:12px;">
+        <!-- ganti folder videos/ → videos_overlay/ -->
+        <source src="{{ url_for('static', filename='videos_overlay/' + filename) }}"
+                type="video/mp4">
+        Browser tidak mendukung video.
+      </video>
+
+      <!-- ===== LOADING OVERLAY ===== -->
+      <div id="uploadLoader" class="loader-overlay" style="display:none;">
+        <div class="loader-box">
+          <div class="loader-bar"><div class="loader-fill"></div></div>
+          <p>Mengunggah & memproses video…</p>
+        </div>
+      </div>
+
+    {% else %}
+      <img src="{{ url_for('static', filename='images/yoga.jpg') }}" alt="Placeholder">
+      <div class="preview-label">“PREVIEW”</div>
+    {% endif %}
+  </section>
+
+  <!-- ───── KANAN : SIDEBAR ───── -->
+  <aside class="sidebar">
+
+    {# Form hanya muncul bila belum ada video #}
+    {% if not filename %}
+      <form class="upload-form" action="{{ url_for('predict') }}"
+            method="POST" enctype="multipart/form-data">
+
+        <div class="card upload-card">
+          <label class="upload-drop" for="video-input">
+            <span class="material-icons-round">file_upload</span>
+            <p id="upload-label">Click to upload</p>
+          </label>
+          <p id="file-name" class="file-name" hidden>No file chosen</p>
+        </div>
+
+        <input id="video-input" type="file" name="video"
+               accept="video/*" required hidden>
+
+        <button type="submit" class="btn-primary upload-btn">Upload&nbsp;now</button>
+      </form>
+
+      <hr class="sidebar-divider">
+    {% endif %}
+
+    <!-- KARTU 1 – HASIL -->
+    <div class="card result-card">
+      <h4>Hasil</h4>
+
+      {% if prediction == "Pose tidak terdeteksi" %}
+        <p class="result-text">Pose tidak terdeteksi / video tidak valid.</p>
+
+      {% elif prediction %}
+        <p class="result-text">
+          {{ prediction }}
+          {% if 'benar' in prediction.lower() %}
+            <span class="material-icons-round success-icon">verified</span>
+          {% endif %}
+        </p>
+
+      {% else %}
+        <p class="result-text">Belum ada hasil</p>
+      {% endif %}
+    </div>
+
+    <!-- KARTU 2 – PERBAIKAN -->
+    <div class="card result-card">
+      <h4>Perbaikan</h4>
+      {% if feedback_list %}
+        <ul class="feedback-list">
+          {% for item in feedback_list %}
+            <li>{{ item|body_id }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="result-text">Tidak ada perbaikan</p>
+      {% endif %}
+    </div>
+  </aside>
+</main>
+
+
+<!-- ───── SUARA GOOGLE (hanya jika pose terdeteksi) ───── -->
+<!-- ===== ① LOADER saat upload (selalu ada) ===== -->
+<script>
+  const form = document.querySelector('.upload-form');
+  if (form){
+    form.addEventListener('submit', ()=>{
+      const loader = document.getElementById('uploadLoader');
+      if (loader) loader.style.display = 'flex';
+    });
+  }
+</script>
+
+{% if prediction and prediction != "Pose tidak terdeteksi" %}
+<!-- ===== ②–③ SUARA & PROGRESS BAR (hanya jika pose valid) ===== -->
+<script>
+  /* ---------- util suara ---------- */
+  function speak(text){
+    if(!('speechSynthesis' in window)) return;
+    const utt = new SpeechSynthesisUtterance(text);
+    const g   = speechSynthesis.getVoices()
+                 .find(v => v.name.includes('Google') && v.lang.startsWith('id'));
+    g ? utt.voice = g : utt.lang = 'id-ID';
+    speechSynthesis.speak(utt);
+  }
+
+  /* ---------- rakit kalimat ---------- */
+  const predText = {{ prediction|tojson|safe }};
+  let   message  = `Selamat, gerakannya sudah benar ${predText}`;
+
+  {% if feedback_list %}
+    const items = [
+      {% for itm in feedback_list %}
+        {{ (itm|body_id)|tojson }}{{ ',' if not loop.last }}
+      {% endfor %}
+    ];
+    function join(arr){
+      if(arr.length === 1) return arr[0];
+      if(arr.length === 2) return `${arr[0]} dan ${arr[1]}`;
+      const last = arr.pop();
+      return `${arr.join(', ')} dan ${last}`;
+    }
+    message += `, tetapi masih ada perbaikan pada ${join([...items])}`;
+  {% endif %}
+
+  /* ---------- bicara sekali ---------- */
+  let spoken = false;
+  function speakOnce(){ if(spoken) return; spoken = true; speak(message); }
+
+  if (speechSynthesis.getVoices().length) speakOnce();
+  speechSynthesis.addEventListener('voiceschanged', speakOnce, { once:true });
+  document.addEventListener('click', speakOnce, { once:true });
+
+  /* ---------- progress bar sinkron video ---------- */
+  const vid  = document.getElementById('previewVideo');
+  const fill = document.getElementById('progressFill');
+
+  if (vid && fill){
+    const sync = () => {
+      if (vid.duration){
+        fill.style.width = (vid.currentTime / vid.duration * 100) + '%';
+      }
+    };
+    vid.addEventListener('timeupdate', sync);
+    vid.addEventListener('seeking',    sync);
+  }
+</script>
+{% endif %}
+
+
+</body>
+</html>

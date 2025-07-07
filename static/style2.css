@@ -1,0 +1,193 @@
+/* ───────── 1. GLOBAL ───────── */
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family: 'Inter', Arial, sans-serif;
+  background:#2e6f86;                 /* latar biru-tua seperti mock-up */
+  color:#fff; line-height:1.55;
+}
+a{color:#fff;text-decoration:none}
+
+/* ───────── 2. NAVBAR ───────── */
+.navbar{
+  background:#152331;
+  box-shadow:0 2px 10px rgba(0,0,0,.25);
+  border-bottom-left-radius:14px;
+  border-bottom-right-radius:14px;
+}
+.navbar-container{
+  max-width:1100px;margin:0 auto;
+  display:flex;justify-content:center;align-items:center;
+  padding:8px 24px;position:relative;
+}
+.nav-group{
+    display:flex;
+    align-items:center;
+    gap:26px;
+    font-weight:600;
+    font-size: 14px;
+}
+.logo{height:45px}
+.menu-icon{position:absolute;right:20px;cursor:pointer}
+
+/* ───────── 3. LAYOUT KONTEN ───────── */
+.content{
+  display:flex;gap:60px;justify-content:center;align-items:flex-start;
+  padding:60px 25px;
+}
+@media(max-width:1024px){
+  .content{flex-direction:column;align-items:center}
+}
+
+/* ── 3a. Preview kiri ──*/
+.preview-card{
+  position:relative;width:min(650px,90vw);
+  border-radius:20px;overflow:hidden;
+  box-shadow:0 4px 16px rgba(0,0,0,.35);
+}
+.preview-card video,
+.preview-card img{width:100%;display:block}
+.preview-label{
+  position:absolute;inset:0;
+  display:flex;justify-content:center;align-items:center;
+  font-size:clamp(20px,4vw,42px);font-weight:700;
+  color:#fff;background:rgba(0,0,0,.45);backdrop-filter:blur(3px);
+}
+
+/* ── 3b. Sidebar kanan ──*/
+.sidebar{display:flex;flex-direction:column;align-items:center;gap:32px}
+.card{
+  background:#fff;color:#333;
+  border-radius:12px;padding:32px 38px;
+  width:320px;max-width:90vw;
+  box-shadow:0 4px 14px rgba(0,0,0,.25);
+}
+
+/* Upload card */
+.upload-drop{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  cursor:pointer;padding:16px 20px;
+  border:2px dashed #c7c7c7;border-radius:8px;color:#6b6b6b;font-weight:500;
+  transition:.25s
+}
+.upload-drop:hover{background:#f7f7f7}
+.upload-drop .material-icons-round{font-size:44px}
+
+.btn-primary{
+  margin-top:22px;width:100%;padding:10px 0;
+  background:#3880ff;color:#fff;font-weight:600;font-size:15px;
+  border:none;border-radius:8px;
+  box-shadow:0 3px 8px rgba(0,0,0,.2);
+  cursor:pointer;transition:.25s
+}
+.btn-primary:hover{background:#2d6de0}
+
+.sidebar-divider{
+  width:100%;border:none;border-top:1px solid #4e7687
+}
+
+/* Result card */
+.result-card h4{text-align:center;margin:0 0 18px}
+.result-text{font-weight:600;font-size:15px;text-align:center;margin:0}
+.success-icon{font-size:20px;vertical-align:middle;color:#28b463}
+
+/* Feedback list */
+.feedback-list{margin-top:18px;padding-left:18px;color:#333}
+.feedback-list li{margin-bottom:6px}
+
+/* ───────── 4. MISC ───────── */
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#4f9ab0;border-radius:8px}
+
+.preview-card video{
+    width:100%;
+    display:block;
+  }
+
+  /* --- Upload button lebih besar & penuh --- */
+.upload-card .btn-primary{
+    /* penuhi lebar kartu */
+    width:100%;
+    display:block;
+  
+    /* ukuran & bentuk */
+    padding:14px 0;               /* lebih tinggi */
+    font-size:17px;
+    border-radius:28px;           /* sudut bulat seperti gambar ② */
+  
+    /* warna seperti mock-up */
+    background:#2979ff;           /* biru cerah */
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
+  
+    transition:.25s;
+  }
+  .upload-card .btn-primary:hover{
+    background:#1e64e0;
+  }
+
+/* Atur form vertikal & rata-tengah */
+.upload-form{
+    display:flex; flex-direction:column; align-items:center; gap:28px;
+  }
+  
+  /* Tombol besar terpisah dari kartu */
+  .upload-btn{
+    width:100%;                 /* selebar sidebar/kartu */
+    max-width:320px;            /* sama dgn lebar card */
+    padding:14px 0;
+    font-size:17px;
+    background:#2979ff;
+    border:none; border-radius:28px;
+    color:#fff; font-weight:600;
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
+    cursor:pointer; transition:.25s;
+  }
+  .upload-btn:hover{ background:#1e64e0; }
+  
+ /* ===== progress bar di bawah preview ===== */
+.progress-bar{
+  width:100%;
+  height:8px;
+  background:#e0e0e0;
+  border-radius:4px;
+  margin-top:10px;
+  overflow:hidden;
+}
+.progress-bar #progressFill{
+  height:100%;
+  width:0;
+  background:#4caf50;        /* warna hijau */
+  transition:width .2s linear;
+}
+
+/* ===== overlay full‑screen ===== */
+.loader-overlay{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.45);
+  display:flex; justify-content:center; align-items:center;
+  z-index:9999;
+}
+.loader-box{
+  width:280px;
+  padding:24px 32px;
+  background:#ffffff;
+  border-radius:16px;
+  box-shadow:0 4px 20px rgba(0,0,0,.25);
+  text-align:center;
+  font-family:'Open Sans',sans-serif;
+}
+/* bar */
+.loader-bar{
+  width:100%; height:10px; background:#e0e0e0;
+  border-radius:5px; overflow:hidden; margin-bottom:18px;
+}
+.loader-fill{
+  width:0%; height:100%; background:#4caf50;
+  animation: indet 1.2s infinite;
+}
+/* animasi indeterminate */
+@keyframes indet{
+  0%{width:0%} 50%{width:100%} 100%{width:0%}
+}
+
+  
+  

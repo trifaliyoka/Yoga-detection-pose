@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Yoga Balance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Open+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="nav-group">
+                <a href="{{ url_for('home') }}">HOME</a>
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
+                <a href="#about">ABOUT</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section Fullscreen -->
+    <div class="hero">
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <h1>Temukan Keseimbangan Tubuh dan Pikiran</h1>
+            <p>Jadikan yoga sebagai bagian dari rutinitas harian Anda untuk meningkatkan fokus, fleksibilitas, dan ketenangan jiwa. Mulailah perjalanan menuju hidup yang lebih sehat, seimbang, dan penuh kesadaran—dengan satu gerakan kecil hari ini..</p>
+            <button class="start-button" onclick="window.location.href='{{ url_for('predict') }}'">Mulai</button>
+        </div>
+    </div>
+
+    <!------- Hero sudah ada di atas ------->
+
+<section id="about" class="about-section">
+    <!-- Kartu putih berisi judul & teks -->
+    <div class="about-card">
+      <h2><span class="about-sub">ABOUT</span> YOGA DETECTION</h2>
+  
+      <p class="about-text">
+        Yoga merupakan disiplin holistik yang berakar pada filsafat India kuno, 
+        yang memadukan praktik postur tubuh (āsana), pengaturan napas (prāṇāyāma), 
+        meditasi, dan etika hidup demi mencapai keseimbangan fisik, psikologis, dan 
+        spiritual. Sejumlah penelitian mutakhir melaporkan bahwa yoga secara signifikan 
+        berkontribusi pada peningkatan fleksibilitas, stabilitas postural, kapasitas paru-paru, 
+        serta penurunan tingkat stres dan kecemasan—menjadikannya intervensi komplementer yang 
+        diakui dalam ilmu kesehatan modern. Mengingat manfaat tersebut, kami mengajak sivitas akademika 
+        dan masyarakat luas untuk mengintegrasikan latihan yoga secara teratur dalam gaya hidup sehari-hari. 
+        Praktik yang konsisten, dilaksanakan dengan metode yang terstandar dan diawasi secara tepat, tidak hanya 
+        meningkatkan kebugaran jasmani, tetapi juga mendukung kesehatan mental dan kualitas hidup secara menyeluruh.
+      </p>
+  
+      <a href="#"
+         class="about-readmore">Mulai perjalanan hidup sehat</a>
+    </div>
+  
+    <!-- Kolom gallery -->
+    <aside class="gallery-col">
+        <h2>Gallery</h2>
+      
+        <!-- Carousel (klik gambar untuk ganti) -->
+        <div class="carousel" id="carousel">
+          <div class="carousel-track">
+            <img src="{{ url_for('static', filename='images/4.jpg') }}"
+                 data-cap="Adho Mukha Svanasanalt (Downward Dog)" alt="">
+            <img src="{{ url_for('static', filename='images/5.jpg') }}"
+                 data-cap="Vrksasana (Tree Pose)" alt="">
+            <img src="{{ url_for('static', filename='images/6.jpeg') }}"
+                 data-cap="	Virabhadrasana II (Warrior 2)" alt="">
+            <img src="{{ url_for('static', filename='images/7.jpg') }}"
+                 data-cap="Phalakasana (Plank) " alt="">
+            <img src="{{ url_for('static', filename='images/8.jpeg') }}"
+                 data-cap="	Navasana (Boat)" alt="">
+            <img src="{{ url_for('static', filename='images/9.jpg') }}"
+                 data-cap="	Sarvangasana (Shoulder Stand)" alt="">
+          </div>
+        </div>
+      
+        <p id="gallery-caption" class="gallery-caption"></p>
+      </aside>
+      
+      
+  </section>
+  <script>
+    const track   = document.querySelector('.carousel-track');
+    const slides  = Array.from(track.children);
+    const count   = slides.length;
+    const stepPct = 100 / count;        // % perpindahan tiap gambar
+  
+    let index = 0;
+    const caption = document.getElementById('gallery-caption');
+  
+    function show(i){
+      track.style.transform = `translateY(-${stepPct * i}%)`;
+      if (caption) caption.textContent = slides[i].dataset.cap || '';
+    }
+  
+    /* tampilkan pertama kali */
+    show(index);
+  
+    /* klik untuk pindah */
+    document.getElementById('carousel').addEventListener('click', () => {
+      index = (index + 1) % count;
+      show(index);
+    });
+  </script>
+  
+  
+  
+  
+  
+</body>
+</html>
